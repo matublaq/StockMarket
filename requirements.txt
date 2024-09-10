@@ -2,5 +2,4 @@ numpy
 pandas
 streamlit
 matplotlib
-sqlite3
 datetime
