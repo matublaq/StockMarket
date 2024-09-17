@@ -49,5 +49,19 @@ country_inflation(country_selected[1])
 st.title("Inflation adjusted price")
 df = price_inflation_adjusted(company_selected[0], country_selected[1])
 
+
+plt.figure(figsize=(25, 5))
+
+#graphing
+plt.plot(df['year'], df['price'], label='Close')
+plt.plot(df['year'], df['last_price_adj_inflation'], label='Last price with inflation adjusted')
+plt.plot(df['year'], df['real_price_adj'], label='Real price adjusted')
+
+plt.title("Actual price vs Last price with inflation vs Real price adjusted")
+plt.xlabel("Year")
+plt.ylabel("Price")
+plt.legend()
+st.pyplot(plt)
+
 st.dataframe(df)
 

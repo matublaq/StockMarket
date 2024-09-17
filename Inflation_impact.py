@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[8]:
+# In[1]:
 
 
 import numpy as np
@@ -111,33 +111,42 @@ def price_inflation_adjusted(ticker, country_code):
     prices['GROWTH'] = 0
     prices['real_price_adj'] = 0
     prices['inflation'] = 0
-    prices['last_price_inflation'] = 0
+    prices['last_price_adj_inflation'] = 0
 
     today = datetime.datetime.now()
     for year in prices['year']:
         if year == str(today.year):
-            return prices[['year', 'inflation', 'price', 'last_price_inflation', 'real_price_adj', 'GROWTH']]
+            prices.loc[prices['year'] == year, 'real_price_adj'] = prices.loc[prices['year'] == year, 'price']
+            prices.loc[prices['year'] == year, 'inflation'] = prices.loc[prices['year'] == year, 'price']
+            prices.loc[prices['year'] == year, 'last_price_adj_inflation'] = prices.loc[prices['year'] == year, 'price']
+            return prices[['year', 'inflation', 'price', 'last_price_adj_inflation', 'real_price_adj', 'GROWTH']]
         
         inflation = inflations[inflations['year'] == int(year)]['inflation_rate'].values[0]
 
         if str(int(year)-1) in prices['year'].values:
             last_price = prices[prices['year'] == str(int(year)-1)]['price'].values[0]
-            price_adj_inflation = last_price*((inflation/100) + 1)
+            last_price_adj_inflation = last_price*((inflation/100) + 1)
             actual_price = prices[prices['year'] == year]['price'].values[0]
             
-            diff_adj_actual = ((actual_price - price_adj_inflation)/price_adj_inflation)*100 #Creció o decreció.
+            diff_adj_actual = ((actual_price - last_price_adj_inflation)/last_price_adj_inflation)*100 #Creció o decreció.
             prices.loc[prices['year'] == year, 'GROWTH'] = diff_adj_actual.round(2)
             real_actual_price = last_price*((diff_adj_actual/100) + 1)
                          
             prices.loc[prices['year'] == year, 'real_price_adj'] = real_actual_price.round(3)
             prices.loc[prices['year'] == year, 'inflation'] = inflation
-            prices.loc[prices['year'] == year, 'last_price_inflation'] = price_adj_inflation.round(3)
+            prices.loc[prices['year'] == year, 'last_price_adj_inflation'] = last_price_adj_inflation.round(3)
         else:
             prices.loc[prices['year'] == year, 'real_price_adj'] = 0
             prices.loc[prices['year'] == year, 'inflation'] = 0
-            prices.loc[prices['year'] == year, 'last_price_inflation'] = 0
+            prices.loc[prices['year'] == year, 'last_price_adj_inflation'] = 0
 
-    return prices[['year', 'inflation', 'price', 'last_price_inflation', 'real_price_adj', 'GROWTH']]
+    return prices[['year', 'inflation', 'price', 'last_price_adj_inflation', 'real_price_adj', 'GROWTH']]
+
+
+# In[8]:
+
+
+price_inflation_adjusted('AAPL', 'USA')
 
 
 # In[5]:
