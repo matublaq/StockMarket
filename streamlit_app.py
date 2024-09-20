@@ -43,7 +43,7 @@ company_selected = st.selectbox("Selecciona el ticker", companies)
 stock_quote_year_price(company_selected[0])
 
 st.title("Countries available")
-country_selected = st.selectbox("Selecciona el país", countries)
+country_selected = st.selectbox("Selecciona el país", countries, index=143)
 country_inflation(country_selected[1])
 
 st.title("Inflation adjusted price")

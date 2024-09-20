@@ -78,8 +78,8 @@ def country_inflation(code):
     cursor = conn.cursor()
 
     cursor.execute("SELECT id FROM Countries WHERE code = ?", (code,))
-    id_usa = cursor.fetchall()[0]
-    cursor.execute("SELECT year, inflation_rate FROM Inflation WHERE country_id = ?", id_usa)
+    id_country = cursor.fetchall()[0]
+    cursor.execute("SELECT year, inflation_rate FROM Inflation WHERE country_id = ?", id_country)
     inflation = cursor.fetchall()
 
     conn.close()
@@ -93,7 +93,7 @@ def stock_quote_year_price(ticker):
         cursor.execute("SELECT id FROM Companies WHERE ticker = ?", (ticker,))
         id_company = cursor.fetchall()[0]
 
-        #Average price in dicember
+        #Last price of every year
         cursor.execute('''
                     SELECT strftime('%Y', date) as year, MAX(date) as max_date, close as price, volume
                     FROM Stock_quotes
@@ -122,7 +122,7 @@ def price_inflation_adjusted(ticker, country_code):
             return prices[['year', 'inflation', 'price', 'last_price_adj_inflation', 'real_price_adj', 'GROWTH']]
         
         inflation = inflations[inflations['year'] == int(year)]['inflation_rate'].values[0]
-
+    
         if str(int(year)-1) in prices['year'].values:
             last_price = prices[prices['year'] == str(int(year)-1)]['price'].values[0]
             last_price_adj_inflation = last_price*((inflation/100) + 1)
@@ -143,31 +143,47 @@ def price_inflation_adjusted(ticker, country_code):
     return prices[['year', 'inflation', 'price', 'last_price_adj_inflation', 'real_price_adj', 'GROWTH']]
 
 
-# In[8]:
+# In[5]:
 
 
 price_inflation_adjusted('AAPL', 'USA')
 
 
-# In[5]:
+# In[6]:
 
 
 inflations = country_inflation('USA')
 inflations
 
 
-# In[6]:
+# In[7]:
 
 
 prices = stock_quote_year_price('AAPL')
 prices.columns
 
 
-# In[7]:
+# In[8]:
 
 
 prices_inflation = price_inflation_adjusted('MSFT', 'USA')
 prices_inflation
+
+
+# <p style="font-size: 25px; text-align: center;">Consultas generales</p>
+
+# In[9]:
+
+
+conn = sqlite3.connect('Inflation.db')
+cursor = conn.cursor()
+
+cursor.execute("SELECT * FROM Countries WHERE code = 'USA'")
+usa = cursor.fetchall()[0]
+
+conn.close()
+
+print(usa)
 
 
 # In[ ]:
