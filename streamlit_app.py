@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import sqlite3
+import yfinance as yf
 import datetime
 
 import streamlit as st
@@ -11,8 +12,8 @@ from Inflation_impact import country_inflation, stock_quote_year_price, price_in
 #country_inflation(code), stock_quote_year_price(ticker), price_inflation_adjusted(ticker, code)
 
 ##########################################################################################################
-#######################################Querys#############################################################
-###############Stock Market########################
+####################################### Querys ###########################################################
+############### Stock Market database ########################
 conn1 = sqlite3.connect('StockMarket.db')
 cursor1 = conn1.cursor()
 
@@ -21,7 +22,7 @@ companies = cursor1.fetchall()
 
 conn1.close()
 
-###############Inflation########################
+############### Inflation database ########################
 conn2 = sqlite3.connect('Inflation.db')
 cursor2 = conn2.cursor()
 
@@ -30,7 +31,7 @@ countries = cursor2.fetchall()
 
 conn2.close()
 
-##########################################################################################################
+########################################################################################################
 
 st.markdown("<h1 style='text-align: center; color: skyblue;'>Inflación y su impacto en la bolsa</h1>", unsafe_allow_html=True)
 st.markdown("<br>", unsafe_allow_html=True)
@@ -50,7 +51,7 @@ st.title("Inflation adjusted price")
 df = price_inflation_adjusted(company_selected[0], country_selected[1])
 
 
-plt.figure(figsize=(25, 5))
+plt.figure(figsize=(30, 5))
 
 #graphing
 plt.plot(df['year'], df['price'], label='Close')
@@ -63,5 +64,15 @@ plt.ylabel("Price")
 plt.legend()
 st.pyplot(plt)
 
+st.markdown("<h3 style='font-size: 15px;'> &nbsp&nbsp&nbsp Cada ano que la empreza cotizo por debajo de la linea naranja (last price with inflation adjusted), la empresa vale manos en relación al ano pasado.</h3>", unsafe_allow_html=True)
+
 st.dataframe(df)
+
+########################################################################################################
+###################################### Company information #############################################
+st.markdown("<br><hr><hr>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; color: skyblue;'>Información de la empresa</h1>", unsafe_allow_html=True)
+
+company_info = yf.Ticker(company_selected[0]).info
+st.write(company_info)
 
