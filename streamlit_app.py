@@ -74,5 +74,5 @@ st.markdown("<br><hr><hr>", unsafe_allow_html=True)
 st.markdown("<h1 style='text-align: center; color: skyblue;'>Información de la empresa</h1>", unsafe_allow_html=True)
 
 company_info = yf.Ticker(company_selected[0]).info
-st.write(company_info)
-
+with st.expander("Ver información general", expanded=False):
+    st.write(company_info)
