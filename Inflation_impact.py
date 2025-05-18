@@ -14,7 +14,7 @@ import datetime
 import requests
 
 
-# In[2]:
+# In[6]:
 
 
 url_inflation_db = "https://github.com/matublaq/DataBases/raw/main/Inflation.db"
@@ -156,14 +156,14 @@ inflations = country_inflation('USA')
 inflations
 
 
-# In[7]:
+# In[ ]:
 
 
 prices = stock_quote_year_price('AAPL')
 prices.columns
 
 
-# In[8]:
+# In[ ]:
 
 
 prices_inflation = price_inflation_adjusted('MSFT', 'USA')
@@ -172,7 +172,7 @@ prices_inflation
 
 # <p style="font-size: 25px; text-align: center;">Consultas generales</p>
 
-# In[9]:
+# In[ ]:
 
 
 conn = sqlite3.connect('StockMarket.db')
